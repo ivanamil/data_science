@@ -2,12 +2,21 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import argparse
 
-def norm_rasp(mu,sigma):
-    s = np.random.normal(mu, sigma, (100, 100))
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("c", "count", help="sample count", type=int)
+    return parser.parse_args()
+
+
+def norm_rasp(mu, sigma, count):
+    s = np.random.normal(mu, sigma, (count, count))
     x = s[0][:]
     y = s[1][:]
-    return x,y
+    return x, y
+
 
 def ring_transform(xy):
     res_z = []
@@ -16,22 +25,19 @@ def ring_transform(xy):
         res_z.append(z/4 + z/np.linalg.norm(z))
     return res_z
 
-x,y = norm_rasp(0,0.5)
-plt.plot(x, y, 'x')
-#plt.show()
 
-xy = zip(x,y)
-#transform gaussian distribution to a ring distribution
-res_z = ring_transform(xy)
+if __name__ == "__main__":
+    args = parse_args()
 
-zx,zy = zip(*res_z)
-plt.plot(zx, zy, 'x', color = 'r')
-plt.axis('equal')
-plt.show()
+    x,y = norm_rasp(0, 0.5, args.count)
+    plt.plot(x, y, 'x')
+    #plt.show()
 
-#linear classifier
+    xy = zip(x,y)
+    #transform gaussian distribution to a ring distribution
+    res_z = ring_transform(xy)
 
-#X_all = np.append(x,zx)
-#Y_all = np.append(y,zy)
-
-#beta = np.linalg.inv(X_all.T * X_all) * X_all.T * Y_all
+    zx,zy = zip(*res_z)
+    plt.plot(zx, zy, 'x', color = 'r')
+    plt.axis('equal')
+    plt.show()
